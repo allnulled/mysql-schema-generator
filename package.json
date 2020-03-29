@@ -4,7 +4,7 @@
   "description": "Generate projects from mysql-schema JSON files",
   "main": "src/index.js",
   "bin": {
-    "mysql-schema-generator": "./bin/mysql-schema-generator"
+    "mysql-schema-generator": "bin/mysql-schema-generator"
   },
   "scripts": {
     "build": "npm shrinkwrap",
@@ -38,5 +38,17 @@
     "glob": "^7.1.6",
     "mysql-schema": "0.0.4",
     "yargs": "^15.3.1"
-  }
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/allnulled/mysql-schema-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/allnulled/mysql-schema-generator/issues"
+  },
+  "homepage": "https://github.com/allnulled/mysql-schema-generator#readme"
 }
