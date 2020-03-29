@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+
+const pkg = require(__dirname + "/../package.json");
+const args = require("yargs")
+	.version(pkg.version)
+	.option("schema-user", {
+		type: "string",
+		default: undefined,
+		describe: "db user",
+	})
+	.option("schema-password", {
+		type: "string",
+		default: undefined,
+		describe: "db user password",
+	})
+	.option("schema-host", {
+		type: "string",
+		default: undefined,
+		describe: "db host",
+	})
+	.option("schema-port", {
+		type: "string",
+		default: undefined,
+		describe: "db host",
+	})
+	.option("schema-database", {
+		type: "string",
+		default: undefined,
+		describe: "db name",
+	})
+	.option("schema-as-json", {
+		type: "boolean",
+		default: undefined,
+		describe: "output json, no js",
+	})
+	.option("schema-output", {
+		type: "string",
+		default: undefined,
+		describe: "output file",
+	})
+	.option("schema-configurations", {
+		type: "string",
+		default: undefined,
+		describe: "config file (overrides)",
+	})
+	.option("schema-extensions", {
+		type: "string",
+		default: undefined,
+		describe: "extensions file",
+	})
+	.option("schema-debug", {
+		type: "boolean",
+		default: undefined,
+		describe: "debug",
+	})
+	.option("generator-schema", {
+		type: "array",
+		default: undefined,
+		describe: "file with the database schema",
+	})
+	.option("generator-directories", {
+		type: "array",
+		default: undefined,
+		describe: "directories to input templates from",
+	})
+	.option("generator-output", {
+		type: "string",
+		default: undefined,
+		describe: "directory to output generated project",
+	})
+	.argv;
+
+const mixed = {
+	schema: {},
+	generator: {}
+};
+
+const fixName = prop => {
+	return prop.replace(/\-[a-z]/g, match => {
+		return match.substr(1).toUpperCase();
+	})
+};
+
+Object.keys(args).forEach(prop => {
+	if(prop.startsWith("schema-")) {
+		const newName = fixName(prop.replace("schema-",""));
+		mixed.schema[newName] = args[prop];
+	} else if(prop.startsWith("generator-")) {
+		const newName = fixName(prop.replace("generator-",""));
+		mixed.generator[newName] = args[prop];
+	}
+});
+
+require(__dirname + "/../" + pkg.main).generateProject(mixed);
