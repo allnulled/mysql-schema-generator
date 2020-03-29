@@ -28,10 +28,10 @@ class MySQLSchemaGenerator {
 			const options = Object.assign({}, this.DEFAULT_OPTIONS, mixedOptions);
 			Object.assign(options.schema, this.DEFAULT_SCHEMA_OPTIONS, options.schema);
 			Object.assign(options.generator, this.DEFAULT_GENERATOR_OPTIONS, options.generator);
-			if(options.schema.debug || options.generator.debug) {
+			if (options.schema.debug || options.generator.debug) {
 				Debug.enable("mysql-schema-generator");
 			}
-			if(options.schema.generation) {
+			if (options.schema.generation) {
 				debug("⛁ Generating schema. Please, wait...");
 				MySQLSchema.getSchema(options.schema).then(() => {
 					debug("✔ Successfully generated schema!");
@@ -111,7 +111,7 @@ class MySQLSchemaGenerator {
 			debug("⛁ Starting directory @ " + directory);
 			await new Promise((ok, fail) => {
 				fs.ensureDir(parameters.input.generator.output, error => {
-					if(error) {
+					if (error) {
 						return fail(error);
 					}
 					return ok();
@@ -186,7 +186,7 @@ class MySQLSchemaGenerator {
 				await this.$generateFromCallbackFile(item, index, "callbacks-before", files, parameters, directory, itemPath);
 			}
 		} catch (error) {
-			debug("[Error]:", error);
+			console.log("[Error]", error);
 			throw error;
 		}
 	}
@@ -194,37 +194,73 @@ class MySQLSchemaGenerator {
 	static async $generateFromCallbackFile(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
 		try {
 			const mod = require(item);
-			if(mod instanceof Promise) {
+			if (mod instanceof Promise) {
 				await mod;
-			} else if(typeof mod === "function") {
-				const result = mod({ ...parameters, item, index, typeOfGeneration, matchedGroup, directory });
-				if(result instanceof Promise) {
+			} else if (typeof mod === "function") {
+				const result = mod({ ...parameters,
+					item,
+					index,
+					typeOfGeneration,
+					matchedGroup,
+					directory
+				});
+				if (result instanceof Promise) {
 					await result;
 				}
 			}
 		} catch (error) {
-			debug("[Error]:", error);
+			console.log("[Error]", error);
 			throw error;
 		}
 	}
 
-	static $generateFromCreateFile(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
-		const dest = path.resolve(parameters.input.generator.output, itemPath);
-		if (!fs.existsSync(dest)) {
-			fs.ensureFileSync(dest);
-			fs.copySync(item, dest);
+	static async $generateFromCreateFile(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
+		try {
+			const dest = path.resolve(parameters.input.generator.output, itemPath);
+			if (!fs.existsSync(dest)) {
+				fs.ensureFileSync(dest);
+				fs.copySync(item, dest);
+			}
+		} catch(error) {
+			console.log("[Error]", error);
 		}
 	}
 
-	static $generateFromOverrideFile(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
-		const dest = path.resolve(parameters.input.generator.output, itemPath);
-		fs.ensureFileSync(dest);
-		fs.copySync(item, dest);
+	static async $generateFromOverrideFile(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
+		try {
+			const dest = path.resolve(parameters.input.generator.output, itemPath);
+			fs.ensureFileSync(dest);
+			fs.copySync(item, dest);
+		} catch (error) {
+			console.log("[Error]", error);
+			throw error;
+		}
 	}
 
-	static $generateFromCreateTemplate(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
-		const dest = path.resolve(parameters.input.generator.output, itemPath);
-		if (!fs.existsSync(dest)) {
+	static async $generateFromCreateTemplate(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
+		try {
+			const dest = path.resolve(parameters.input.generator.output, itemPath);
+			if (!fs.existsSync(dest)) {
+				const srcContents = fs.readFileSync(item).toString();
+				const templateParameters = this.$createParameters({
+					sourceFile: item,
+					destinationFile: dest,
+					directory,
+					...parameters,
+				});
+				const destContents = ejs.render(srcContents, templateParameters);
+				fs.ensureFileSync(dest);
+				fs.writeFileSync(dest, destContents, "utf8");
+			}
+		} catch (error) {
+			console.log("[Error]", error);
+			throw error;
+		}
+	}
+
+	static async $generateFromOverrideTemplate(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
+		try {
+			const dest = path.resolve(parameters.input.generator.output, itemPath);
 			const srcContents = fs.readFileSync(item).toString();
 			const templateParameters = this.$createParameters({
 				sourceFile: item,
@@ -235,21 +271,10 @@ class MySQLSchemaGenerator {
 			const destContents = ejs.render(srcContents, templateParameters);
 			fs.ensureFileSync(dest);
 			fs.writeFileSync(dest, destContents, "utf8");
+		} catch (error) {
+			console.log("[Error]", error);
+			throw error;
 		}
-	}
-
-	static $generateFromOverrideTemplate(item, index, typeOfGeneration, matchedGroup, parameters, directory, itemPath) {
-		const dest = path.resolve(parameters.input.generator.output, itemPath);
-		const srcContents = fs.readFileSync(item).toString();
-		const templateParameters = this.$createParameters({
-			sourceFile: item,
-			destinationFile: dest,
-			directory,
-			...parameters,
-		});
-		const destContents = ejs.render(srcContents, templateParameters);
-		fs.ensureFileSync(dest);
-		fs.writeFileSync(dest, destContents, "utf8");
 	}
 
 
