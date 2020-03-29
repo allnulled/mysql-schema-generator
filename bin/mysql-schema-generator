@@ -55,12 +55,12 @@ const args = require("yargs")
 	})
 	.option("generator-schema", {
 		type: "array",
-		default: undefined,
+		default: [],
 		describe: "file with the database schema",
 	})
 	.option("generator-directories", {
 		type: "array",
-		default: undefined,
+		default: [],
 		describe: "directories to input templates from",
 	})
 	.option("generator-output", {
