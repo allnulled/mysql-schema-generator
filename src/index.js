@@ -28,19 +28,29 @@ class MySQLSchemaGenerator {
 			const options = Object.assign({}, this.DEFAULT_OPTIONS, mixedOptions);
 			Object.assign(options.schema, this.DEFAULT_SCHEMA_OPTIONS, options.schema);
 			Object.assign(options.generator, this.DEFAULT_GENERATOR_OPTIONS, options.generator);
-			if(options.schema.debug) {
+			if(options.schema.debug || options.generator.debug) {
 				Debug.enable("mysql-schema-generator");
 			}
-			debug("⛁ Generating schema. Please, wait...");
-			MySQLSchema.getSchema(options.schema).then(() => {
-				debug("✔ Successfully generated schema!");
+			if(options.schema.generation) {
+				debug("⛁ Generating schema. Please, wait...");
+				MySQLSchema.getSchema(options.schema).then(() => {
+					debug("✔ Successfully generated schema!");
+					debug("⛁ Generating project. Please, wait...");
+					this.$generateProject(options.generator, mixedOptions).then(() => {
+						debug("✔ Successfully generated project!");
+						ok();
+						return;
+					}).catch(fail);
+				}).catch(fail);
+			} else {
+				debug("⛁ Not generating any schema.");
 				debug("⛁ Generating project. Please, wait...");
 				this.$generateProject(options.generator, mixedOptions).then(() => {
 					debug("✔ Successfully generated project!");
 					ok();
 					return;
 				}).catch(fail);
-			}).catch(fail);
+			}
 		});
 	}
 

@@ -15,6 +15,7 @@ describe("mysql-schema-generator", function() {
 
 		MySQLSchemaGenerator.generateProject({
 			schema: {
+				generation: true,
 				user: process.env.DB_USER || "test",
 				password: process.env.DB_PASSWORD || "test",
 				database: process.env.DB_NAME || "database2",
@@ -47,6 +48,7 @@ describe("mysql-schema-generator", function() {
 	it("generates projects by CLI", function(done) {
 
 		const parameters = [
+			"--schema-generation", 
 			"--schema-user test",
 			"--schema-password test",
 			"--schema-database database2",

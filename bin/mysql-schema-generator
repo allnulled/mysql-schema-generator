@@ -3,6 +3,11 @@
 const pkg = require(__dirname + "/../package.json");
 const args = require("yargs")
 	.version(pkg.version)
+	.option("schema-generation", {
+		type: "boolean",
+		default: false,
+		describe: "create schema file too",
+	})
 	.option("schema-user", {
 		type: "string",
 		default: undefined,
