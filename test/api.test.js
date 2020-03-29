@@ -23,6 +23,7 @@ describe("mysql-schema-generator", function() {
 				port: process.env.DB_PORT || 3306,
 				extensions: process.env.DB_EXTENSIONS,
 				output: __dirname + "/test/db1.schema.js",
+				debug: true,
 			},
 			generator: {
 				schema: [__dirname + "/test/db1.schema.js"],
@@ -60,11 +61,8 @@ describe("mysql-schema-generator", function() {
 			"--generator-directories test/templates/group2 test/templates/group1",
 			"--generator-output test/test/db2",
 		];
-		const command="./bin/mysql-schema-generator " + parameters.join(" ");
-		//console.log(command);
-		exec(command, {
-			cwd: __dirname + "/.."
-		})
+		const command = "./bin/mysql-schema-generator " + parameters.join(" ");
+		exec(command, { cwd: __dirname + "/.." });
 		expect(fs.existsSync(__dirname + "/test/db2.schema.js")).to.equal(true);
 		expect(fs.existsSync(__dirname + "/test/db2/hi.txt")).to.equal(true);
 		expect(fs.existsSync(__dirname + "/test/db2/bye.txt")).to.equal(true);

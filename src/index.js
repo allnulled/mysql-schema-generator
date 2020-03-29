@@ -2,9 +2,9 @@ const path = require("path");
 const fs = require("fs-extra");
 const ejs = require("ejs");
 const glob = require("glob");
-const MySQLSchema = require("mysql-schema");
 const Debug = require("debug");
 const debug = Debug("mysql-schema-generator");
+const MySQLSchema = require("mysql-schema");
 
 class MySQLSchemaGenerator {
 

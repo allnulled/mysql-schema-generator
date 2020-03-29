@@ -55,7 +55,7 @@ const args = require("yargs")
 	})
 	.option("schema-debug", {
 		type: "boolean",
-		default: undefined,
+		default: false,
 		describe: "debug",
 	})
 	.option("generator-schema", {
