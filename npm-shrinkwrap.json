@@ -3620,9 +3620,9 @@
       "dev": true
     },
     "mysql-schema": {
-      "version": "0.0.5",
-      "resolved": "https://registry.npmjs.org/mysql-schema/-/mysql-schema-0.0.5.tgz",
-      "integrity": "sha512-k6kwY9qW/zMSYu83jTT8MANIHsVu5+KRrOCQjF47acRYJTtGtHrx1sOY9vj7L9w9y1y4FFjnoijvZGYsQNNECQ==",
+      "version": "0.0.6",
+      "resolved": "https://registry.npmjs.org/mysql-schema/-/mysql-schema-0.0.6.tgz",
+      "integrity": "sha512-ipsalGjMMAIPXjX5haaDmX9dXHgteSI4HnYB/HZHCFBLt5TufZ0fE+VQZy+mIQdI2daOi0/QLflhj3ueOwJSAQ==",
       "requires": {
         "debug": "^4.1.1",
         "javascript-stringify": "^2.0.1",
