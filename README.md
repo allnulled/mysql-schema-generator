@@ -29,17 +29,21 @@ This is an example that uses programmatic variables for `mysql-schema` setup ins
 
 ```js
 require("mysql-schema-generator").generateProject({
-	schemaGeneration: true,
-	schemaUser: process.env.DB_USER,
-	schemaPassword: process.env.DB_PASSWORD,
-	schemaHost: process.env.DB_HOST,
-	schemaPort: process.env.DB_PORT,
-	schemaDatabase: process.env.DB_NAME,
-	schemaExtensions: process.env.DB_EXTENSIONS,
-	schemaOutput: __dirname + "/db1.schema.js",
-	generatorSchema: __dirname + "/db1.schema.js",
-	generatorDirectories: [],
-	generatorOutput: __dirname + "/db1"
+	schema: {
+		generation: true,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		host: process.env.DB_HOST,
+		port: process.env.DB_PORT,
+		database: process.env.DB_NAME,
+		extensions: process.env.DB_EXTENSIONS,
+		output: __dirname + "/db1.schema.js",
+	},
+	generator: {
+		schema: __dirname + "/db1.schema.js",
+		directories: [],
+		output: __dirname + "/db1"
+	}
 }).then(() => {
 	console.log("[*] Project successfully generated!");
 }).catch(console.log);
